@@ -6,9 +6,12 @@ FTC Utils — small reusable utilities for FTC robot code (pure JVM `core` + FTC
 - **math**
   - `MathOperand<T>` — add/subtract/multiply/divide/remainder, with Kotlin `+ - * / %` operators.
   - `MathUtils` — clamp, lerp, mapRange, angle wrap + shortest error, deadband, rate limiting, sign-preserving square/cube, epsilon-equals.
+  - `Matrix` — small immutable dense matrix (add/subtract/multiply/transpose/inverse/determinant), written for this library instead of an external dependency.
 - **filter**
   - `Filter` — functional filter `update(newInput, covariance, oldOutput)`; factories for low-pass, high-pass, and moving average; filters combine with the `MathOperand` operations.
   - `FilterState` — stateful wrapper that holds the previous output and covariance.
+  - `KalmanFilter` — linear Kalman filter over a matrix state (F/B/H/Q/R), Joseph-form covariance update.
+  - `ExtendedKalmanFilter` — EKF for nonlinear models: caller supplies the process/measurement functions and their Jacobians.
 - **control**
   - `Controller` — functional controller `evaluate(setpoint, input)`; P/I/D/PID/PIDF factories, piecewise composition, `MathOperand` combinators.
   - `PiecewiseController` — switches controllers by |error| threshold.
