@@ -6,6 +6,12 @@ plugins {
     `maven-publish`
 }
 
+repositories {
+    mavenCentral()
+    maven("https://repo.dairy.foundation/releases/")
+    google()
+}
+
 android {
     namespace = "com.example.ftclib.ftc"
     compileSdk = 30
@@ -41,13 +47,13 @@ dependencies {
 
     // Provided by the host robot app at runtime. Compile against the same
     // version the consuming Quickstart uses; never use implementation here.
-    compileOnly("org.firstinspires.ftc:RobotCore:11.1.0")
-    compileOnly("org.firstinspires.ftc:Hardware:11.1.0")
-    compileOnly("org.firstinspires.ftc:FtcCommon:11.1.0")
+    compileOnly("org.firstinspires.ftc:RobotCore:12.0.0")
+    compileOnly("org.firstinspires.ftc:Hardware:12.0.0")
+    compileOnly("org.firstinspires.ftc:FtcCommon:12.0.0")
 
-    // FTC Dashboard: needed by DashboardVars (config vars upload). Provided
-    // by the host robot app at runtime, like the FTC SDK above.
-    compileOnly("com.acmerobotics.dashboard:dashboard:0.4.16")
+    implementation("dev.frozenmilk.sinister:Sloth:0.3.2")
+
+    implementation("com.aventrix.jnanoid:jnanoid:2.0.0")
 }
 
 publishing {
