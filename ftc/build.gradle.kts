@@ -45,8 +45,9 @@ dependencies {
     compileOnly("org.firstinspires.ftc:Hardware:11.1.0")
     compileOnly("org.firstinspires.ftc:FtcCommon:11.1.0")
 
-    // Optional: uncomment if you wire up FTC Dashboard graphing in the OpModes.
-    // compileOnly("com.acmerobotics.dashboard:dashboard:0.4.16")
+    // FTC Dashboard: needed by DashboardVars (config vars upload). Provided
+    // by the host robot app at runtime, like the FTC SDK above.
+    compileOnly("com.acmerobotics.dashboard:dashboard:0.4.16")
 }
 
 publishing {

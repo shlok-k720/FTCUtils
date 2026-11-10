@@ -19,4 +19,8 @@ FTC Utils — small reusable utilities for FTC robot code (pure JVM `core` + FTC
   - `LimiterConfig`, `PidConfig` — tunable configs (see below).
 - **config**
   - `Configuration<T>` / `IConfiguration<T>` / `Configurator<T>` — config framework: `defaults()` then a configurator lambda overrides.
-  - `config.vars` — `Val<T>` (read-only value or live view), `Var<T>` (read/write value or provider alias), `ValGetter`, `ValSetter`, `VarProvider`.
+  - `config.vars` — `Val<T>` (read-only value or live view), `Var<T>` (read/write value or provider alias; named vars carry a `Section`, register in `Variables`, support `Validator`s, mutability locking, and `at()` temporary overrides), `ValGetter`, `ValSetter`, `VarProvider`, `Section`, `Validation`, `Validator`, `Modifier`, `Variables`, `GarbageCollector`, and Kotlin aliases/factories in `config.vars.kt` (`DoubleVar`, `IntVar`, `StrVar`, `BoolVar`).
+
+## Ftc (`com.rmsftc.ftcImpl`)
+
+- `DashboardVars` — uploads named config vars and modifiers to the FTC Dashboard (`upload`, `registerAllToFtcDash`); dashboard edits call `Var.set`, so validation and locking still apply. Modifier entries are display-only.
