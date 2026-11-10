@@ -5,12 +5,14 @@ package com.rmsftc.utils.math;
  * depending on an external linear-algebra library. It covers what the
  * filters need: arithmetic, transpose, inverse, and determinant.
  *
- * <p>Matrices are immutable: every operation returns a new matrix, and
- * constructors copy their input. Dimensions are validated and misuse
- * throws {@link IllegalArgumentException} (or {@link IllegalStateException}
- * for a singular matrix passed to {@link #inverse()}).
+ * <p>Implements {@link MathOperand}: add/subtract are element-wise,
+ * multiply is matrix multiplication, divide is right division
+ * ({@code A / B = A * B^-1}), and remainder is element-wise
+ * ({@code A % B} is {@code a[i][j] % b[i][j]} — there is no matrix
+ * remainder, so the element-wise one is the only sensible definition).
+ * In Kotlin the operators {@code + - * / %} work on matrices.
  */
-public class Matrix {
+public class Matrix implements MathOperand<Matrix> {
     private static final double SINGULAR_EPSILON = 1e-12;
 
     private final int rows;
@@ -104,6 +106,7 @@ public class Matrix {
         return new Matrix(data);
     }
 
+    @Override
     public Matrix add(Matrix other) {
         requireSameSize(other, "add");
         double[][] result = new double[rows][cols];
@@ -115,6 +118,7 @@ public class Matrix {
         return new Matrix(result);
     }
 
+    @Override
     public Matrix subtract(Matrix other) {
         requireSameSize(other, "subtract");
         double[][] result = new double[rows][cols];
@@ -126,6 +130,7 @@ public class Matrix {
         return new Matrix(result);
     }
 
+    @Override
     public Matrix multiply(Matrix other) {
         if (cols != other.rows) {
             throw new IllegalArgumentException(
@@ -167,6 +172,31 @@ public class Matrix {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 result[r][c] = data[r][c] * scalar;
+            }
+        }
+        return new Matrix(result);
+    }
+
+    /**
+     * Right division: {@code this * other^-1}. {@code other} must be
+     * square and invertible.
+     */
+    @Override
+    public Matrix divide(Matrix other) {
+        return multiply(other.inverse());
+    }
+
+    /**
+     * Element-wise remainder: {@code result[i][j] = data[i][j] % other[i][j]}.
+     * There is no matrix remainder, so the element-wise one is the definition.
+     */
+    @Override
+    public Matrix remainder(Matrix other) {
+        requireSameSize(other, "remainder");
+        double[][] result = new double[rows][cols];
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                result[r][c] = data[r][c] % other.data[r][c];
             }
         }
         return new Matrix(result);

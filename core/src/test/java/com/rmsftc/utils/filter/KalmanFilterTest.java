@@ -4,6 +4,7 @@ import com.rmsftc.utils.math.Matrix;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -83,6 +84,52 @@ class KalmanFilterTest {
         assertArrayEquals(new double[]{2.0}, filter.getState(), EPS);
         filter.update(new double[]{2.0});
         assertArrayEquals(new double[]{2.0}, filter.getState(), EPS);
+    }
+
+    @Test
+    void scalarUpdateIsAPredictPlusCorrectStep() {
+        KalmanFilter filter = new KalmanFilter(
+                new Matrix(new double[][]{{1}}),
+                new Matrix(new double[][]{{1}}),
+                Matrix.diagonal(0.001),
+                Matrix.diagonal(0.1),
+                new double[]{0},
+                Matrix.identity(1));
+        for (int i = 0; i < 10; i++) {
+            double output = filter.update(5.0, 0.0, 0.0);
+            assertEquals(filter.getState()[0], output, EPS);
+        }
+        assertTrue(Math.abs(filter.getState()[0] - 5.0) < 0.05,
+                "estimate should converge to 5, was " + filter.getState()[0]);
+    }
+
+    @Test
+    void scalarUpdateRejectsMultiDimensionalFilters() {
+        KalmanFilter filter = new KalmanFilter(
+                new Matrix(new double[][]{{1, 1}, {0, 1}}),
+                new Matrix(new double[][]{{1, 0}}),
+                Matrix.diagonal(0.001, 0.001),
+                Matrix.diagonal(0.1),
+                new double[]{0, 0},
+                Matrix.identity(2));
+        assertThrows(UnsupportedOperationException.class,
+                () -> filter.update(5.0, 0.0, 0.0));
+    }
+
+    @Test
+    void resetRestoresTheInitialState() {
+        KalmanFilter filter = new KalmanFilter(
+                new Matrix(new double[][]{{1}}),
+                new Matrix(new double[][]{{1}}),
+                Matrix.diagonal(0.001),
+                Matrix.diagonal(0.1),
+                new double[]{2.0},
+                Matrix.diagonal(0.5));
+        filter.predict();
+        filter.update(new double[]{5.0});
+        filter.reset();
+        assertArrayEquals(new double[]{2.0}, filter.getState(), EPS);
+        assertTrue(filter.getCovariance().equals(Matrix.diagonal(0.5), EPS));
     }
 
     @Test

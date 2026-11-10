@@ -7,7 +7,34 @@ import java.util.Deque;
 
 @FunctionalInterface
 public interface Filter extends MathOperand<Filter> {
+    /**
+     * One filtering step for a scalar signal. Stateless filters compute the
+     * new output from the given inputs; stateful filters (KalmanFilter,
+     * ExtendedKalmanFilter) implement this as a 1-D convenience — a predict
+     * step plus a correction with the scalar measurement, returning the
+     * first state component — and ignore {@code covariance} and
+     * {@code oldOutput}, because they keep their own covariance and state.
+     */
     double update(double newInput, double covariance, double oldOutput);
+
+    /**
+     * Advances the filter's internal state one step (the predict step of a
+     * Kalman-style filter). Default is a no-op: stateless filters have
+     * nothing to predict. Stateful filters override it.
+     */
+    default void predict() {}
+
+    /**
+     * Corrects the filter with a measurement vector (the update step of a
+     * Kalman-style filter). Default is a no-op. Stateful filters override it.
+     */
+    default void update(double[] measurement) {}
+
+    /**
+     * Resets the filter to its initial state. Default is a no-op.
+     * Stateful filters override it.
+     */
+    default void reset() {}
 
 
     static Filter lowPassFilter(double alpha) {

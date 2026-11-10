@@ -116,6 +116,37 @@ class MatrixTest {
     }
 
     @Test
+    void divideIsRightDivision() {
+        Matrix a = new Matrix(new double[][]{{6, 0}, {0, 6}});
+        Matrix b = new Matrix(new double[][]{{2, 0}, {0, 3}});
+        assertTrue(a.divide(b).equals(new Matrix(new double[][]{{3, 0}, {0, 2}}), EPS));
+    }
+
+    @Test
+    void divideRejectsSingularDivisors() {
+        Matrix a = Matrix.identity(2);
+        Matrix singular = new Matrix(new double[][]{{1, 2}, {2, 4}});
+        assertThrows(IllegalStateException.class, () -> a.divide(singular));
+    }
+
+    @Test
+    void remainderIsElementWise() {
+        Matrix a = new Matrix(new double[][]{{5, 7}, {9, 11}});
+        Matrix b = new Matrix(new double[][]{{2, 3}, {4, 5}});
+        assertTrue(a.remainder(b).equals(new Matrix(new double[][]{{1, 1}, {1, 1}}), EPS));
+        assertThrows(IllegalArgumentException.class,
+                () -> a.remainder(new Matrix(3, 3)));
+    }
+
+    @Test
+    void matrixIsAMathOperand() {
+        Matrix a = Matrix.identity(2);
+        assertTrue(a instanceof MathOperand);
+        MathOperand<Matrix> operand = a;
+        assertTrue(operand.add(a).equals(Matrix.identity(2).multiply(2.0), EPS));
+    }
+
+    @Test
     void operationsDoNotMutateTheirInputs() {
         Matrix a = new Matrix(new double[][]{{1, 2}, {3, 4}});
         Matrix b = new Matrix(new double[][]{{5, 6}, {7, 8}});

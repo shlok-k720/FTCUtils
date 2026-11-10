@@ -1,9 +1,11 @@
 package com.rmsftc.utils.filter;
 
+import com.rmsftc.utils.math.Matrix;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FilterTest {
 
@@ -84,5 +86,56 @@ class FilterTest {
         assertEquals(2.0, state.getCovariance());
         state.setCovariance(3.0);
         assertEquals(3.0, state.getCovariance());
+    }
+
+    @Test
+    void defaultPredictUpdateAndResetAreNoOpsForStatelessFilters() {
+        Filter filter = Filter.lowPassFilter(0.5);
+        filter.predict();
+        filter.update(new double[]{1.0});
+        filter.reset();
+        assertEquals(0.5, filter.update(1.0, 0.0, 0.0));
+    }
+
+    @Test
+    void filterStateResetResetsAWrappedKalmanFilter() {
+        FilterState state = new FilterState(new KalmanFilter(
+                new Matrix(new double[][]{{1}}),
+                new Matrix(new double[][]{{1}}),
+                Matrix.diagonal(0.001),
+                Matrix.diagonal(0.1),
+                new double[]{0},
+                Matrix.identity(1)));
+        for (int i = 0; i < 5; i++) {
+            state.update(5.0);
+        }
+        assertTrue(state.get() > 4.0, "output should converge toward 5, was " + state.get());
+        state.reset();
+        assertEquals(0.0, state.get());
+        FilterState fresh = new FilterState(new KalmanFilter(
+                new Matrix(new double[][]{{1}}),
+                new Matrix(new double[][]{{1}}),
+                Matrix.diagonal(0.001),
+                Matrix.diagonal(0.1),
+                new double[]{0},
+                Matrix.identity(1)));
+        assertEquals(fresh.update(5.0), state.update(5.0), 1e-9);
+    }
+
+    @Test
+    void kalmanFilterCanBeUsedAsAFilter() {
+        KalmanFilter kalman = new KalmanFilter(
+                new Matrix(new double[][]{{1}}),
+                new Matrix(new double[][]{{1}}),
+                Matrix.diagonal(0.001),
+                Matrix.diagonal(0.1),
+                new double[]{0},
+                Matrix.identity(1));
+        Filter filter = kalman;
+        filter.predict();
+        filter.update(new double[]{5.0});
+        assertEquals(4.545, kalman.getState()[0], 0.01);
+        filter.reset();
+        assertEquals(0.0, kalman.getState()[0]);
     }
 }

@@ -56,8 +56,12 @@ public class FilterState {
         reset(0.0);
     }
 
-    /** Resets the output to {@code initialOutput}. */
+    /**
+     * Resets the output to {@code initialOutput} and resets the wrapped
+     * filter (a no-op for stateless filters).
+     */
     public void reset(double initialOutput) {
+        filter.reset();
         this.output = initialOutput;
     }
 }

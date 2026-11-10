@@ -16,9 +16,12 @@ import com.rmsftc.utils.math.Matrix;
  * The update uses the Joseph form of the covariance update, which stays
  * symmetric and positive-definite even with rounding error.
  *
- * <p>Unlike the stateless {@link Filter}, this class keeps the covariance
- * between steps — a Kalman step has to evolve it, and the {@code Filter}
- * interface has nowhere to return it to, so the two are separate.
+ * <p>Implements {@link Filter}: the scalar {@code update} is a 1-D
+ * convenience (predict + correct with the scalar measurement, returning
+ * the first state component), and the {@code Filter} defaults
+ * {@code predict()}, {@code update(double[])} and {@code reset()} are
+ * overridden with the real Kalman steps. The covariance lives inside the
+ * filter — that is why the scalar update ignores its covariance argument.
  *
  * <pre>
  * // Track a position moving at constant velocity, measuring position only.
@@ -35,12 +38,14 @@ import com.rmsftc.utils.math.Matrix;
  * double position = filter.getState()[0];
  * </pre>
  */
-public class KalmanFilter {
+public class KalmanFilter implements Filter {
     private final Matrix f;
     private final Matrix b;
     private final Matrix h;
     private final Matrix q;
     private final Matrix r;
+    private final double[] initialState;
+    private final Matrix initialCovariance;
     private Matrix x;
     private Matrix p;
 
@@ -88,11 +93,14 @@ public class KalmanFilter {
         this.h = h;
         this.q = q;
         this.r = r;
+        this.initialState = initialState.clone();
+        this.initialCovariance = initialCovariance.copy();
         this.x = Matrix.columnVector(initialState);
         this.p = initialCovariance.copy();
     }
 
     /** Predicts the next state with no control input. */
+    @Override
     public void predict() {
         predict(null);
     }
@@ -107,6 +115,7 @@ public class KalmanFilter {
     }
 
     /** Corrects the estimate with a measurement. */
+    @Override
     public void update(double[] measurement) {
         if (measurement.length != h.rows()) {
             throw new IllegalArgumentException(
@@ -121,6 +130,31 @@ public class KalmanFilter {
         Matrix iMinusKh = identity.subtract(k.multiply(h));
         p = iMinusKh.multiply(p).multiply(iMinusKh.transpose())
                 .add(k.multiply(r).multiply(k.transpose()));
+    }
+
+    /**
+     * The {@link Filter} scalar step: a predict step plus a correction
+     * with the scalar measurement, returning the first state component.
+     * Only meaningful for 1-D filters (1 state, 1 measurement); the
+     * {@code covariance} and {@code oldOutput} arguments are ignored —
+     * the filter keeps its own covariance and state.
+     */
+    @Override
+    public double update(double newInput, double covariance, double oldOutput) {
+        if (x.rows() != 1 || h.rows() != 1) {
+            throw new UnsupportedOperationException(
+                    "Scalar update is only supported for 1-D filters");
+        }
+        predict();
+        update(new double[]{newInput});
+        return getState()[0];
+    }
+
+    /** Restores the initial state estimate and covariance. */
+    @Override
+    public void reset() {
+        x = Matrix.columnVector(initialState);
+        p = initialCovariance.copy();
     }
 
     /** A copy of the current state estimate. */
