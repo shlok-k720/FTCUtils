@@ -13,7 +13,7 @@ repositories {
 }
 
 android {
-    namespace = "com.example.ftclib.ftc"
+    namespace = "com.rmsftc.utils.ftc"
     compileSdk = 30
 
     defaultConfig {
