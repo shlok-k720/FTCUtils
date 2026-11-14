@@ -33,6 +33,15 @@ class LimiterTest {
     }
 
     @Test
+    void infiniteMaxRateAppliesTheTargetEvenWithZeroDt() {
+        // Default config: maxRate is infinite. Without the guard in
+        // limit(), infinite * 0.0 is NaN and the output comes out NaN.
+        Limiter limiter = new LimiterConfig().limiter();
+        assertEquals(1.0, limiter.limit(1.0, 0.0));
+        assertEquals(-0.5, limiter.limit(-0.5, 0.0));
+    }
+
+    @Test
     void retuningTheConfigRetunesTheLimiter() {
         LimiterConfig config = new LimiterConfig(c -> c.maxRate.set(1.0));
         Limiter limiter = config.limiter();

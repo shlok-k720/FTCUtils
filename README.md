@@ -27,4 +27,4 @@ Pure JVM telemetry utilities, wired into `ftc` via `api(project(":telemetry"))`.
 
 ## Ftc (`com.rmsftc.ftcImpl`)
 
-FTC-facing code: Daemon and Clock management, `SmartMotor`, `MecanumDrive`.
+FTC-facing code: Daemon and Clock management, `SmartMotor` (power target + rate limiter, applied in `update(dtSeconds)`), and `MecanumDrive` (four-`SmartMotor` mecanum drive: robot-centric `drive` + field-centric `driveFieldCentric`, wheel powers normalized, applied in `update(dtSeconds)`).

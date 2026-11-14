@@ -38,7 +38,12 @@ public class Limiter {
      * [{@code minOutput}, {@code maxOutput}].
      */
     public double limit(double target, double dt) {
-        double maxChange = config.maxRate.get() * dt;
+        double rate = config.maxRate.get();
+        // An infinite rate means "no rate limit": it allows any change,
+        // whatever dt is. Without this, rate * 0.0 is NaN when dt is 0
+        // (e.g. the first loop tick), and the output comes out NaN.
+        double maxChange = Double.isInfinite(rate)
+                ? Double.POSITIVE_INFINITY : rate * dt;
         double stepped = MathUtils.rateLimit(previousOutput, target, maxChange);
         double limited = MathUtils.clamp(stepped, config.minOutput.get(), config.maxOutput.get());
         previousOutput = limited;

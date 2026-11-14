@@ -21,8 +21,14 @@ public class SmartMotor {
         this.targetPower = power;
     }
 
-    public void update() {
-        motor.setPower(limiter.limit(targetPower, 0.0));
+    /**
+     * Pushes the last {@link #setPower(double)} target through the
+     * limiter to the motor. Call once per loop with the loop's dt in
+     * seconds; the limiter ramps the power toward the target by at most
+     * {@code maxRate * dt} per call.
+     */
+    public void update(double dtSeconds) {
+        motor.setPower(limiter.limit(targetPower, dtSeconds));
     }
 
 }
