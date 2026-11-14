@@ -42,6 +42,9 @@ dependencies {
     // The core types are part of this module's public API.
     api(project(":core"))
 
+    // The telemetry types are part of this module's public API.
+    api(project(":telemetry"))
+
     // Kotlin types appear in the public API, so the stdlib must reach consumers.
     api(kotlin("stdlib"))
 

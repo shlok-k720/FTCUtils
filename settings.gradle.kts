@@ -18,3 +18,4 @@ rootProject.name = "FTCUtils"
 
 include(":core")
 include(":ftc")
+include(":telemetry")
