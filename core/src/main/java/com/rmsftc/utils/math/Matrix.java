@@ -343,4 +343,9 @@ public class Matrix implements MathOperand<Matrix> {
             m[target][c] += scale * m[source][c];
         }
     }
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof Matrix && equals((Matrix) other, 1e-9);
+    }
 }
