@@ -29,7 +29,7 @@ public final class DaemonManager {
         return Collections.unmodifiableList(daemons);
     }
 
-    public static RegisteredDaemon getProcedure(String id) {
+    public static RegisteredDaemon getDaemon(String id) {
         return daemons.stream()
                 .filter(daemon -> daemon.id.equals(id))
                 .findFirst()
