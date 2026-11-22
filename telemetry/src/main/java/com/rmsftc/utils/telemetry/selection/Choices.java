@@ -29,8 +29,39 @@ public class Choices {
         this.currentSelection = i;
     }
 
+    /** How many choices there are. */
+    public int size() {
+        return choices.length;
+    }
+
+    /** The currently selected choice. */
+    public AnswerChoice getSelected() {
+        return choices[currentSelection];
+    }
+
+    /** Renders the choices in the default plain-text format. */
     public String getString() {
-        return Strings.combine(); //TODO
+        return getString(DisplayFormat.instance);
+    }
+
+    /**
+     * Renders one choice per line: the current-selection indicator (or the
+     * other-choice indicator) before each name, and the format's
+     * after-choice string after it.
+     */
+    public String getString(DisplayFormat format) {
+        StringBuilder builder = Strings.builder();
+        for (int i = 0; i < choices.length; i++) {
+            if (i > 0) {
+                builder.append(Strings.newline());
+            }
+            boolean current = i == currentSelection;
+            builder.append(current
+                    ? format.currentChoiceIndicator()
+                    : format.allOtherChoiceIndicator());
+            builder.append(choices[i].name);
+            builder.append(current ? format.afterCurrentChoice() : format.afterOtherChoice());
+        }
+        return builder.toString();
     }
 }
-

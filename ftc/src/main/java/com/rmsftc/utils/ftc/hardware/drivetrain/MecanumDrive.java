@@ -1,5 +1,6 @@
 package com.rmsftc.utils.ftc.hardware.drivetrain;
 
+import com.rmsftc.utils.DriveVector;
 import com.rmsftc.utils.ftc.hardware.SmartMotor;
 
 import java.util.Objects;
@@ -74,6 +75,14 @@ public class MecanumDrive {
                 forward - strafe + rotate, // back left
                 forward + strafe - rotate  // back right
         );
+    }
+
+    /**
+     * Robot-centric drive from a {@link DriveVector} (its turn is the
+     * rotate). Nothing reaches the motors until {@link #update(double)}.
+     */
+    public void drive(DriveVector vector) {
+        drive(vector.forward(), vector.strafe(), vector.turn());
     }
 
     /**

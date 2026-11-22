@@ -117,4 +117,52 @@ object MathUtils {
     @JvmStatic
     fun epsilonEquals(a: Double, b: Double): Boolean =
         epsilonEquals(a, b, 1e-9)
+
+    /** Normalizes an angle in degrees to [0, 360). */
+    @JvmStatic
+    fun normalizeDegrees360(angle: Double): Double {
+        var normalized = angle % 360.0
+        if (normalized < 0) normalized += 360.0
+        return normalized
+    }
+
+    /** Normalizes an angle in radians to [0, 2*PI). */
+    @JvmStatic
+    fun normalizeRadians2Pi(angle: Double): Double {
+        var normalized = angle % (2.0 * Math.PI)
+        if (normalized < 0) normalized += 2.0 * Math.PI
+        return normalized
+    }
+
+    /**
+     * Shortest-path angle interpolation in degrees: like [lerp], but goes
+     * the short way around the circle (350° → 10° passes through 0°).
+     * The result is wrapped to [-180, 180).
+     */
+    @JvmStatic
+    fun lerpAngleDegrees(a: Double, b: Double, t: Double): Double =
+        wrapAngleDegrees(a + angleErrorDegrees(b, a) * t)
+
+    /**
+     * Shortest-path angle interpolation in radians: like [lerp], but goes
+     * the short way around the circle. The result is wrapped to [-PI, PI).
+     */
+    @JvmStatic
+    fun lerpAngleRadians(a: Double, b: Double, t: Double): Double =
+        wrapAngleRadians(a + angleErrorRadians(b, a) * t)
+
+    /** Degrees to radians. */
+    @JvmStatic
+    fun toRadians(degrees: Double): Double = Math.toRadians(degrees)
+
+    /** Radians to degrees. */
+    @JvmStatic
+    fun toDegrees(radians: Double): Double = Math.toDegrees(radians)
+
+    /**
+     * Heading (radians, [-PI, PI]) of the direction ([dx], [dy]):
+     * `atan2(dy, dx)`. Zero displacement gives 0.
+     */
+    @JvmStatic
+    fun headingTo(dx: Double, dy: Double): Double = Math.atan2(dy, dx)
 }

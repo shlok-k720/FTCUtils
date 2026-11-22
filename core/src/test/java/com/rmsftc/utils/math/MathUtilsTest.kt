@@ -108,4 +108,34 @@ class MathUtilsTest {
         assertTrue(MathUtils.epsilonEquals(1.0, 1.05, 0.1))
         assertFalse(MathUtils.epsilonEquals(1.0, 1.2, 0.1))
     }
+
+    @Test
+    fun normalizeToPositiveRanges() {
+        assertEquals(270.0, MathUtils.normalizeDegrees360(-90.0))
+        assertEquals(10.0, MathUtils.normalizeDegrees360(370.0))
+        assertEquals(0.0, MathUtils.normalizeDegrees360(360.0))
+        assertEquals(3.0 * PI / 2.0, MathUtils.normalizeRadians2Pi(-PI / 2.0), 1e-12)
+        assertEquals(0.5, MathUtils.normalizeRadians2Pi(0.5 + 2.0 * PI), 1e-12)
+    }
+
+    @Test
+    fun lerpAngleTakesShortWayAround() {
+        // 350 -> 10 passes through 0, so halfway is 0 (not 180).
+        assertEquals(0.0, MathUtils.lerpAngleDegrees(350.0, 10.0, 0.5), 1e-12)
+        assertEquals(-5.0, MathUtils.lerpAngleDegrees(350.0, 10.0, 0.25), 1e-12)
+        assertEquals(0.0, MathUtils.lerpAngleRadians(-0.1, 0.1, 0.5), 1e-12)
+    }
+
+    @Test
+    fun degreesRadiansConversion() {
+        assertEquals(PI, MathUtils.toRadians(180.0), 1e-12)
+        assertEquals(90.0, MathUtils.toDegrees(PI / 2.0), 1e-12)
+    }
+
+    @Test
+    fun headingToIsAtan2() {
+        assertEquals(0.0, MathUtils.headingTo(1.0, 0.0), 1e-12)
+        assertEquals(PI / 2.0, MathUtils.headingTo(0.0, 1.0), 1e-12)
+        assertEquals(-PI / 2.0, MathUtils.headingTo(0.0, -1.0), 1e-12)
+    }
 }

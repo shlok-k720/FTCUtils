@@ -23,6 +23,13 @@ dependencies {
     // must be visible to consumers too. kotlin("stdlib") follows the plugin version.
     api(kotlin("stdlib"))
 
+    // The geometry family (Pose/Vector/Vector2D/DriveVector) extends Pedro
+    // Pathing core classes. Pedro core is pure Java (no Android types), so
+    // it compiles against this JVM module. Provided by the consuming robot
+    // app at runtime — consumers using the geometry family declare Pedro
+    // themselves, as they already do; never use implementation here.
+    compileOnly("com.pedropathing:core:3.0.2")
+
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
 }
 

@@ -2,8 +2,12 @@ package com.rmsftc.utils.math.units.basic
 
 import com.rmsftc.utils.math.units.NumericalUnit
 
+/**
+ * Factors are "from base unit": how many of the unit make one base unit.
+ * Base units: radian, meter, second.
+ */
 enum class AngleUnit(val factor: Double) : NumericalUnit<AngleUnit> {
-    DEGREE(Math.PI / 180.0),
+    DEGREE(180.0 / Math.PI),
     RADIAN(1.0);
     override fun baseFactor(): com.rmsftc.utils.math.units.NumericalValue<AngleUnit> {
         return com.rmsftc.utils.math.units.NumericalValue.of(factor, this)
