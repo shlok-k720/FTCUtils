@@ -28,10 +28,10 @@ dependencies {
     // it compiles against this JVM module. Provided by the consuming robot
     // app at runtime — consumers using the geometry family declare Pedro
     // themselves, as they already do; never use implementation here.
-    compileOnly("com.pedropathing:core:3.0.2")
-    testImplementation("com.pedropathing:core:3.0.2")
+    compileOnly(libs.pedropathing.core)
+    testImplementation(libs.pedropathing.core)
 
-    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+    testImplementation(libs.junit.jupiter)
 }
 
 tasks.test {

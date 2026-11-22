@@ -41,7 +41,7 @@ kotlin {
 dependencies {
     // The core types are part of this module's public API.
     api(project(":core"))
-    compileOnly("com.pedropathing:core:3.0.2")
+    compileOnly(libs.pedropathing.core)
 
     // The telemetry types are part of this module's public API.
     api(project(":telemetry"))
@@ -51,13 +51,11 @@ dependencies {
 
     // Provided by the host robot app at runtime. Compile against the same
     // version the consuming Quickstart uses; never use implementation here.
-    compileOnly("org.firstinspires.ftc:RobotCore:12.0.0")
-    compileOnly("org.firstinspires.ftc:Hardware:12.0.0")
-    compileOnly("org.firstinspires.ftc:FtcCommon:12.0.0")
+    compileOnly(libs.bundles.ftc)
 
-    implementation("dev.frozenmilk.sinister:Sloth:0.3.2")
+    implementation(libs.sloth)
 
-    implementation("com.aventrix.jnanoid:jnanoid:2.0.0")
+    implementation(libs.jnanoid)
 }
 
 publishing {
