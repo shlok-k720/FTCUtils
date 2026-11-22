@@ -122,7 +122,7 @@ public class MecanumDrive {
         return wheelPowers.clone();
     }
 
-    private void setWheelPowers(double frontLeft, double frontRight,
+    public void setWheelPowers(double frontLeft, double frontRight,
                                 double backLeft, double backRight) {
         double max = Math.max(
                 Math.max(Math.abs(frontLeft), Math.abs(frontRight)),
