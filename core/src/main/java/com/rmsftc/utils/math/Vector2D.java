@@ -15,7 +15,7 @@ import java.util.Objects;
  * <p>Pedro Pathing core is a {@code compileOnly} dependency of this module.
  */
 public class Vector2D {
-    private final com.pedropathing.math.Vector2D delegate;
+    private com.pedropathing.math.Vector2D delegate;
 
     private Vector2D(com.pedropathing.math.Vector2D delegate) {
         this.delegate = delegate;
@@ -61,6 +61,21 @@ public class Vector2D {
 
     public double y() {
         return delegate.y();
+    }
+
+    /** Sets x in place. */
+    public void setX(double x) {
+        delegate = com.pedropathing.math.Vector2D.cartesian(x, delegate.y());
+    }
+
+    /** Sets y in place. */
+    public void setY(double y) {
+        delegate = com.pedropathing.math.Vector2D.cartesian(delegate.x(), y);
+    }
+
+    /** Sets x and y in place. */
+    public void set(double x, double y) {
+        delegate = com.pedropathing.math.Vector2D.cartesian(x, y);
     }
 
     public double magnitude() {

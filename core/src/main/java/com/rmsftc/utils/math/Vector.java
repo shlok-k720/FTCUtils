@@ -3,9 +3,12 @@ package com.rmsftc.utils.math;
 import com.pedropathing.math.Matrix;
 
 /**
- * A Pedro-compatible n-dimensional vector: extends
+ * A mutable, Pedro-compatible n-dimensional vector: extends
  * {@link com.pedropathing.math.Vector} and overrides every vector-returning
- * operation so results stay in this type.
+ * operation so results stay in this type. Mutate in place with
+ * {@link #set(int, double)} / {@link #setAll(double...)} (Pedro's
+ * {@code elements} array is public, so in-place writes are visible to every
+ * operation).
  *
  * <p>Because this <em>is</em> a Pedro {@code Vector}, it can be passed
  * anywhere Pedro expects one with no conversion. Pedro Pathing core is a
@@ -15,6 +18,19 @@ public class Vector extends com.pedropathing.math.Vector {
 
     public Vector(double... elements) {
         super(elements);
+    }
+
+    /** Sets one element in place. */
+    public void set(int i, double value) {
+        elements[i] = value;
+    }
+
+    /** Replaces every element in place (must match this vector's size). */
+    public void setAll(double... values) {
+        if (values.length != size()) {
+            throw new IllegalArgumentException("Vector sizes must match.");
+        }
+        System.arraycopy(values, 0, elements, 0, values.length);
     }
 
     /** Wraps any Pedro vector in this type (copies its elements). */

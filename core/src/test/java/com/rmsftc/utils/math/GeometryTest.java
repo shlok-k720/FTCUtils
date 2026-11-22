@@ -40,6 +40,66 @@ class GeometryTest {
     }
 
     @Test
+    void poseIsMutable() {
+        Pose pose = new Pose(1.0, 2.0, 0.0);
+        pose.setX(10.0);
+        pose.setY(20.0);
+        pose.setHeading(Math.PI / 2.0);
+        assertEquals(10.0, pose.x(), EPS);
+        assertEquals(20.0, pose.y(), EPS);
+        assertEquals(Math.PI / 2.0, pose.heading(), EPS);
+
+        // Operations read the mutated values, not the constructor ones.
+        Pose moved = pose.plus(new Pose(5.0, -5.0, 0.0));
+        assertEquals(15.0, moved.x(), EPS);
+        assertEquals(15.0, moved.y(), EPS);
+        assertEquals(5.0, pose.distance(new Pose(13.0, 24.0, 0.0)), EPS);
+
+        // Pedro-typed reads see the mutation too.
+        com.pedropathing.math.Pose asPedro = pose;
+        assertEquals(10.0, asPedro.x(), EPS);
+
+        // withX still returns a new pose and leaves this one alone.
+        Pose shifted = pose.withX(99.0);
+        assertEquals(99.0, shifted.x(), EPS);
+        assertEquals(10.0, pose.x(), EPS);
+
+        // setHeading normalizes like the constructor.
+        pose.setHeading(3.0 * Math.PI);
+        assertEquals(Math.PI, pose.heading(), EPS);
+
+        pose.set(7.0, 8.0, Math.PI / 4.0);
+        assertEquals(7.0, pose.x(), EPS);
+        assertEquals(8.0, pose.y(), EPS);
+        assertEquals(Math.PI / 4.0, pose.heading(), EPS);
+        assertEquals("(7.0, 8.0, " + (Math.PI / 4.0) + ")", pose.toString());
+    }
+
+    @Test
+    void vectorIsMutable() {
+        Vector v = new Vector(1.0, 2.0, 3.0);
+        v.set(0, 10.0);
+        assertEquals(10.0, v.get(0), EPS);
+        assertEquals(Math.sqrt(113.0), v.magnitude(), EPS);
+
+        v.setAll(4.0, 5.0, 6.0);
+        assertEquals(6.0, v.get(2), EPS);
+    }
+
+    @Test
+    void vector2dIsMutable() {
+        Vector2D v = Vector2D.cartesian(3.0, 4.0);
+        v.setX(6.0);
+        assertEquals(6.0, v.x(), EPS);
+        assertEquals(4.0, v.y(), EPS);
+        v.setY(8.0);
+        assertEquals(10.0, v.magnitude(), EPS);
+        v.set(1.0, 1.0);
+        assertEquals(1.0, v.x(), EPS);
+        assertEquals(1.0, v.y(), EPS);
+    }
+
+    @Test
     void vectorKeepsType() {
         Vector v = new Vector(1.0, 2.0, 3.0);
         com.pedropathing.math.Vector pedroVector = v;
