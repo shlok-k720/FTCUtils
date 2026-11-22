@@ -20,7 +20,7 @@ public class Storage {
     private SharedPreferences sharedPreferences;
 
     public Storage(Context appContext) {
-        this.sharedPreferences = appContext.getSharedPreferences("Storage", Context.MODE_PRIVATE);
+        this.sharedPreferences = appContext.getSharedPreferences("comRmsFtcFTCUtilsStorageManager", Context.MODE_PRIVATE);
     }
 
     public Storage() {
