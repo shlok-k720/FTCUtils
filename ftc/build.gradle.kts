@@ -41,6 +41,7 @@ kotlin {
 dependencies {
     // The core types are part of this module's public API.
     api(project(":core"))
+    compileOnly("com.pedropathing:core:3.0.2")
 
     // The telemetry types are part of this module's public API.
     api(project(":telemetry"))

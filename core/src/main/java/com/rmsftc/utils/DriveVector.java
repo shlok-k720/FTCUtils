@@ -126,8 +126,6 @@ public class DriveVector extends DrivePowers {
 
     /** Multiplies every component by {@code v} in place. */
     public void scale(double v) {
-        forward *= v;
-        strafe *= v;
-        turn *= v;
+        doubleUnaryOperator(op -> op * v);
     }
 }

@@ -29,6 +29,7 @@ dependencies {
     // app at runtime — consumers using the geometry family declare Pedro
     // themselves, as they already do; never use implementation here.
     compileOnly("com.pedropathing:core:3.0.2")
+    testCompileOnly("com.pedropathing:core:3.0.2")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
 }
