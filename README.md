@@ -27,6 +27,7 @@ FTC Utils — small reusable utilities for FTC robot code (pure JVM `core` and `
 - **blackboard** — `Blackboard` + `BlackboardCallback`: a shared key-value store (string or enum keys) with change callbacks, for passing state between behavior trees, state machines, and commands. API-compatible with BehaviorArchitectures' `util` Blackboard (see the plan below).
 - **logger** — `Logger` (static log-event bus: `log(caption, data)`, `attachLogger`/`removeLogger`/`reset`) + `LogSystem` (the sink interface). API-compatible with BehaviorArchitectures' `util` Logger (minus its caption constants).
 - `Enums` — `AllianceColor` (RED/BLUE/UNKNOWN, with `fieldCentricOffset()`), `RobotMode` (AUTONOMOUS/TELEOP/TEST with time limits), `MatchMode` (PLAYOFFS/QUALIFICATIONS).
+- `Clock` — any time supplier as `NumericalValue<TimeUnit>` (`Clock.SYSTEM` reads `System.nanoTime()`; `nowNanos()`/`asLongSupplier()` for plain longs; `Clock.Helper` tracks dt per instance). Lives in core so pure-JVM code can take a `Clock` instead of a raw `Supplier<Long>`.
 
 ## Telemetry (`com.rmsftc.utils.telemetry`)
 
@@ -41,7 +42,7 @@ Pure JVM telemetry utilities, wired into `ftc` via `api(project(":telemetry"))`.
 FTC-facing code:
 
 - **daemons** — `DaemonManager` (Sinister-scanned `@FTCDaemon` registration; daemon methods must be static, zero-arg, void) and `ClockManager`, the classic daemon usage: one static `Clock` (get/set, defaults to `Clock.SYSTEM`) whose daemon snapshots time and computes `dt` every loop (`getTime()`, `getDt()`, `getDtSeconds()`).
-- **utils** — `Clock` (any time supplier as `NumericalValue<TimeUnit>`, nanoseconds by default; `nowNanos()`/`asLongSupplier()` for plain longs; `Clock.Helper` tracks dt per instance), `Storage` (SharedPreferences-backed persistence with typed getters and a generic `Value<T>` format/parse interface — built-ins for String/Int/Long/Double/Float/Boolean, custom implementations for anything else), `Hooks` (event-loop lifecycle wiring for the opmode manager + storage).
+- **utils** — `Storage` (SharedPreferences-backed persistence with typed getters and a generic `Value<T>` format/parse interface — built-ins for String/Int/Long/Double/Float/Boolean, custom implementations for anything else), `Hooks` (event-loop lifecycle wiring for the opmode manager + storage). (`Clock` itself lives in core; `ClockManager` above is the FTC-facing daemon around it.)
 - **hardware** — `SmartMotor` (power target + rate limiter, applied in `update(dtSeconds)`) and `MecanumDrive` (four-`SmartMotor` mecanum drive: robot-centric `drive` — including a `drive(DriveVector)` overload — + field-centric `driveFieldCentric`, wheel powers normalized, applied in `update(dtSeconds)`).
 - **telemetry** — `TelemetryLogger` (a telemetry-module `AdvancedLogger` backed by an FTC `Telemetry`; pass `FtcDashboard.getInstance().getTelemetry()` for dashboard HTML) and `GamepadMenu` (dpad to move, `a` to confirm, over a `Prompter`).
 

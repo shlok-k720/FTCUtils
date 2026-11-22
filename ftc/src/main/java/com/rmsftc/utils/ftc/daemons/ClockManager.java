@@ -1,6 +1,6 @@
 package com.rmsftc.utils.ftc.daemons;
 
-import com.rmsftc.utils.ftc.utils.Clock;
+import com.rmsftc.utils.Clock;
 import com.rmsftc.utils.math.units.NumericalValue;
 import com.rmsftc.utils.math.units.basic.TimeUnit;
 
