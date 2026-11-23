@@ -11,6 +11,7 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven { url = uri("https://maven.brott.dev/") } // FTC Dashboard, if used
+        maven { url = uri("https://repo.dairy.foundation/releases") } // frozenmilk Sloth
     }
 }
 
