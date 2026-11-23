@@ -90,8 +90,9 @@ public final class DaemonManager {
                     throw new IllegalArgumentException(String.format("Method %s.%s is annotated with @FTCDaemon, but is not static.", aClass.getCanonicalName(), factory.getName()));
                 if (factory.getParameterCount() != 0)
                     throw new IllegalArgumentException(String.format("Method %s.%s is annotated with @FTCDaemon, but has %d parameters instead of 0.", aClass.getCanonicalName(), factory.getName(), factory.getParameterCount()));
-                if (factory.getGenericReturnType() != Void.class)
-                    throw new IllegalArgumentException(String.format("Method %s.%s is annotated with @FTCDaemon, but returns %s instead of Void.", aClass.getCanonicalName(), factory.getName(), factory.getReturnType().getCanonicalName()));
+                Class<?> returnType = factory.getReturnType();
+                if (returnType != Void.TYPE && returnType != Void.class)
+                    throw new IllegalArgumentException(String.format("Method %s.%s is annotated with @FTCDaemon, but returns %s instead of void.", aClass.getCanonicalName(), factory.getName(), returnType.getCanonicalName()));
                 factory.setAccessible(true);
                 FTCDaemon annotation = factory.getAnnotation(FTCDaemon.class);
                 String name;
