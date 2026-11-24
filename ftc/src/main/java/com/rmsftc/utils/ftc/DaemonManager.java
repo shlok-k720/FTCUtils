@@ -21,6 +21,16 @@ import dev.frozenmilk.sinister.targeting.SearchTarget;
 import dev.frozenmilk.util.graph.Graph;
 import dev.frozenmilk.util.graph.rule.AdjacencyRule;
 
+/**
+ * Registry of {@link FTCDaemon} methods found by the Sloth scanner.
+ *
+ * <p>Ordering: {@link #unmodifiable()} returns daemons in scan order
+ * (Sloth scan order × {@code Class.getDeclaredMethods()} order), which is
+ * unspecified and can change between runs — there is no priority API.
+ * Consumers that need a deterministic order (e.g. FTChimera's Robot) must
+ * sort by name themselves. Registration is not deduplicated: scanning a
+ * class twice registers its daemons twice.
+ */
 public final class DaemonManager {
     static final List<RegisteredDaemon> daemons = new ArrayList<>();
     static final Map<ClassLoader, List<RegisteredDaemon>> byLoader = new HashMap<>();

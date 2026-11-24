@@ -4,8 +4,9 @@ package com.rmsftc.utils.config.vars;
  * A temporary override of a {@link Var}: {@link #apply()} sets the var to
  * the override value, {@link #revert()} restores the value the var had
  * when this modifier was created. Ported from the FTChimera team's vars
- * system (without the dashboard upload, which lives in the ftc module's
- * {@code DashboardVars} because it needs the FTC Dashboard classes).
+ * system (without dashboard upload, which is not part of this library:
+ * the ftc module's {@code DashboardVars} was deleted; consumers that need
+ * dashboard upload provide their own).
  *
  * <p>Both operations go through {@link Var#set(Object)}, so a locked var
  * or a value that fails validation still throws.

@@ -33,6 +33,12 @@ public interface NumericalUnit<U extends NumericalUnit<U>> {
      * gives the amount in this unit.
      */
     default NumericalValue<U> convertFrom(NumericalValue<U> value, NumericalUnit<U> valueUnit) {
+        // Same unit: return the value unchanged. The round-trip through
+        // base units (value / f * f in double) is not exact and drifted
+        // Clock.SYSTEM.nowNanos() by ±1 ns.
+        if (valueUnit.equals(this)) {
+            return value;
+        }
         double inBase = value.getValue() / valueUnit.baseFactor().getValue();
         return new NumericalValue<>(inBase * baseFactor().getValue(), (U) this);
     }

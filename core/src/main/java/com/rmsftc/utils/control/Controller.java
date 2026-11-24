@@ -103,8 +103,11 @@ public interface Controller extends MathOperand<Controller> {
                 previousTime = System.nanoTime();
                 return 0;
             }
-            dt = (System.nanoTime() - previousTime) * 1e-9;
-            previousTime = System.nanoTime();
+            // One capture: reading nanoTime() twice (once for dt, once for
+            // previousTime) measured a shorter interval than the real one.
+            long now = System.nanoTime();
+            dt = (now - previousTime) * 1e-9;
+            previousTime = now;
             return 0;
         }
 
@@ -121,8 +124,14 @@ public interface Controller extends MathOperand<Controller> {
             double integral = 0;
 
             @Override
-            public double evaluate(double target, double error) {
-                findDt(target, error);
+            public double evaluate(double setpoint, double input) {
+                // The interface contract is evaluate(setpoint, input): the
+                // integral accumulates the ERROR (setpoint - input), not the
+                // raw input. Integrating the input meant the I-term never
+                // grew with a zero input, so it could not correct
+                // steady-state error.
+                double error = setpoint - input;
+                findDt(setpoint, input);
 
                 if (Math.abs(error) < iZone.getAsDouble()) {
                     integral *= decay.getAsDouble();
@@ -158,8 +167,12 @@ public interface Controller extends MathOperand<Controller> {
             boolean firstUpdate = true;
 
             @Override
-            public double evaluate(double target, double error) {
-                findDt(target, error);
+            public double evaluate(double setpoint, double input) {
+                // Differentiate the ERROR, per the interface contract.
+                // Differentiating the raw input instead made the D-term
+                // respond to measurement changes with the wrong sign.
+                double error = setpoint - input;
+                findDt(setpoint, input);
 
                 if (dt < 1e-3 || firstUpdate) {
                     firstUpdate = false;

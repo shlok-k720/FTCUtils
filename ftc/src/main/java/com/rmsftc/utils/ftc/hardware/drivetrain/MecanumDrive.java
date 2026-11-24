@@ -95,11 +95,12 @@ public class MecanumDrive {
      */
     public void driveFieldCentric(double forward, double strafe, double rotate,
                                   double headingRadians) {
-        double cos = Math.cos(headingRadians);
-        double sin = Math.sin(headingRadians);
-        double robotForward = forward * cos - strafe * sin;
-        double robotStrafe = forward * sin + strafe * cos;
-        drive(robotForward, robotStrafe, rotate);
+        // Delegate the rotation to DriveVector: it rotates by -heading
+        // (matching Pedro's ManualDrive.fieldCentric). The previous inline
+        // math rotated by +heading, which drove field-centric backwards
+        // (at heading 90 deg, field-forward came out as robot-left).
+        DriveVector robot = new DriveVector(forward, strafe, rotate, headingRadians);
+        drive(robot.forward(), robot.strafe(), robot.turn());
     }
 
     /**

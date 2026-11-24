@@ -13,7 +13,8 @@ public class PiecewiseController implements Controller {
 
     /**
      * Adds a controller to the piecewise controller.
-     * The controller will be used when the input is greater than or equal to the threshold and less than the next threshold.
+     * The controller will be used when the error (|setpoint - input|) is
+     * greater than or equal to the threshold and less than the next threshold.
      *
      * @return this
      */
@@ -23,9 +24,13 @@ public class PiecewiseController implements Controller {
     }
 
     @Override
-    public double evaluate(double target, double error) {
-        double absError = Math.abs(error);
-        return controllers.floorEntry(absError).getValue().evaluate(target, error);
+    public double evaluate(double setpoint, double input) {
+        // Select on the ERROR magnitude (|setpoint - input|) and pass the
+        // (setpoint, input) pair through unchanged, per the interface
+        // contract. Selecting on |input| switched gains on the measurement
+        // instead of on how far the system is from its target.
+        double absError = Math.abs(setpoint - input);
+        return controllers.floorEntry(absError).getValue().evaluate(setpoint, input);
     }
     @Override
     public void reset() {

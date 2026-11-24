@@ -8,9 +8,9 @@ import java.util.Set;
  * The global registry of variables: every named {@link Var} registers
  * itself here on construction, and {@link Var#at(Object)} registers its
  * {@link Modifier}. Unnamed vars are not registered. Ported from the
- * FTChimera team's vars system (without the dashboard registration, which
- * lives in the ftc module's {@code DashboardVars} because it needs the FTC
- * Dashboard classes).
+ * FTChimera team's vars system. (There is no dashboard registration in
+ * this library: the ftc module's {@code DashboardVars} was deleted;
+ * consumers that need dashboard upload provide their own.)
  *
  * <p>The sets are synchronized: variables are usually created on one
  * thread and read from another (an OpMode, a dashboard callback).
